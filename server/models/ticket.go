@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Ticket struct {
-	ID             int       `json:"id" gorm:"primary_key:auto_increment"`
+	ID             int       `json:"id" gorm:"primary_key"`
 	TrainName      string    `json:"train_name" gorm:"type:varchar(255)"`
 	TrainType      string    `json:"train_type" gorm:"type:varchar(255)"`
 	StartStation   Station   `gorm:"foreignKey:StartStationID"`

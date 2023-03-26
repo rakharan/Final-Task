@@ -6,7 +6,7 @@ import (
 )
 
 type TransactionResponse struct {
-	ID            int                         `json:"id" gorm:"primary_key:auto_increment"`
+	ID            int                         `json:"id" gorm:"primary_key"`
 	TransactionID int                         `json:"transaction_id" `
 	UserID        int                         `json:"user_id"`
 	User          models.UsersProfileResponse `json:"user"`

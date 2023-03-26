@@ -68,7 +68,7 @@ func (r *repository) GetTicketTransaction(UserID int) ([]models.Transaction, err
 
 func (r *repository) UpdateTransaction(status string, ID string) (models.Transaction, error) {
 	var transaction models.Transaction
-	r.db.Preload("Ticket").First(&transaction, ID)
+	r.db.Preload("Ticket").Preload("User").First(&transaction, ID)
 
 	// if status != transaction.Status && status == "success" {
 	// 	var ticket models.Ticket
