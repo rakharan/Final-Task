@@ -2,13 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import SharedLayout from "./components/SharedLayout";
-import Invoice from "./pages/Invoice";
 import MyTicket from "./pages/MyTicket";
 import { UserContext } from "./context/UserContext";
+import {
+  PrivateRoute,
+  PrivateRouteAdmin,
+} from "./components/PrivateRoute/PrivateRoute";
 import { API, setAuthToken } from "./config/api";
 import Payment from "./pages/Payment";
 import AddTicket from "./pages/AddTicket";
 import TransactionList from "./pages/TransactionList";
+import Login from "./components/auth/Login";
+import SignUp from "./components/auth/SignUp";
+import AddStation from "./pages/AddStation";
 const App = () => {
   const navigate = useNavigate();
   const [state, dispatch] = useContext(UserContext);
@@ -99,11 +105,20 @@ const App = () => {
       <Routes>
         <Route path="/" element={<SharedLayout />}>
           <Route index element={<Home />} />
-          <Route path="/invoice" element={<Invoice />} />
-          <Route path="/myTicket" element={<MyTicket />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/admin/addTicket" element={<AddTicket />} />
-          <Route path="/admin/transactionList" element={<TransactionList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signUp" element={<SignUp />} />
+          <Route path="/" element={<PrivateRoute />}>
+            <Route path="/myTicket" element={<MyTicket />} />
+            <Route path="/payment" element={<Payment />} />
+          </Route>
+          <Route path="/" element={<PrivateRouteAdmin />}>
+            <Route path="/admin/addStation" element={<AddStation />} />
+            <Route path="/admin/addTicket" element={<AddTicket />} />
+            <Route
+              path="/admin/transactionList"
+              element={<TransactionList />}
+            />
+          </Route>
         </Route>
       </Routes>
     </div>

@@ -9,10 +9,14 @@ export const GlobalProvider = (props) => {
   const [preview, setPreview] = useState(null);
   const [currentUser, setCurrentUser] = useState([]);
   const [ticketList, setTickets] = useState([]);
+  const [currentTicket, setCurrentTicket] = useState([]);
+  const [tempId, setTempId] = useState(0);
+  const [showTicketModal, setShowTicketModal] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+  const [showTicketSuccess, setShowTicketSuccess] = useState(false);
 
   const [input, setInput] = useState({
     name: "",
@@ -66,6 +70,14 @@ export const GlobalProvider = (props) => {
     setCurrentUser,
     ticketList,
     setTickets,
+    currentTicket,
+    setCurrentTicket,
+    tempId,
+    setTempId,
+    showTicketModal,
+    setShowTicketModal,
+    showTicketSuccess,
+    setShowTicketSuccess,
   };
 
   let functionHandlers = {

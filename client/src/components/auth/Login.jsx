@@ -3,10 +3,13 @@ import { useMutation } from "react-query";
 import { GlobalContext } from "../../context/GlobalContext";
 import Button from "../../parts/Button";
 import { API, setAuthToken } from "../../config/api";
-import { UserContext } from "../../context/UserContext";
+``;
 import Swal from "sweetalert2";
-
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 const Login = () => {
+  const navigate = useNavigate();
+  const [state, dispatch] = useContext(UserContext);
   const [isOnSignUp, setIsOnSignUp] = useState(false);
   const { functionHandlers, statesFromGlobalContext } =
     useContext(GlobalContext);
@@ -14,13 +17,40 @@ const Login = () => {
     loginData,
     setLoginData,
     setIsModalVisible,
-    input,
     setCurrentUser,
     setPreview,
-    preview,
+    setIsLoginModal,
+    setIsSignUpModal,
+    setShowTicketModal,
   } = statesFromGlobalContext;
-  const [state, dispatch] = useContext(UserContext);
-  const { handleInput, handleInputRegister } = functionHandlers;
+  const hideModal = () => {
+    setIsModalVisible(false);
+    setIsSignUpModal(false);
+    setIsLoginModal(false);
+    setShowTicketModal(false);
+  };
+  const { handleInput } = functionHandlers;
+  const [input, setInput] = useState({
+    name: "",
+    password: "",
+    username: "",
+    email: "",
+    image: "",
+    role: "",
+    phone: "",
+  });
+  const handleInputRegister = (event) => {
+    setInput({
+      ...input,
+      [event.target.name]:
+        event.target.type === "file" ? event.target.files : event.target.value,
+    });
+    if (event.target.type === "file") {
+      let url = URL.createObjectURL(event.target.files[0]);
+      setPreview(url);
+    }
+  };
+
   const handleLogin = useMutation(async (event) => {
     event.preventDefault();
     const response = await API.post("/login", loginData);
@@ -45,30 +75,71 @@ const Login = () => {
         no-repeat
       `,
     });
-    setIsModalVisible(false);
+    hideModal();
     setLoginData({
       name: "",
       email: "",
       password: "",
     });
     setPreview(null);
-    setIsModalVisible(false);
-    // {
-    //   response.data.data.role === "admin" ? (
-    //     navigate("/admin")
-    //   ) : response.data.data.role === "user" ? (
-    //     navigate("/")
-    //   ) : (
-    //     <></>
-    //   );
-    // }
-    console.log(state);
+    hideModal();
+  });
+
+  const config = {
+    headers: {
+      "Content-type": "multipart/form-data",
+    },
+  };
+  const handleRegister = useMutation(async (e) => {
+    try {
+      e.preventDefault();
+
+      const formData = new FormData();
+
+      formData.set("name", input.name);
+      formData.set("username", input.username);
+      formData.set("email", input.email);
+      formData.set("password", input.password);
+      formData.set("phone", input.phone);
+      formData.set("image", input.image[0], input.image[0].name);
+
+      await API.post("/user", formData, config);
+
+      Swal.fire({
+        title: "Register Success",
+        icon: "success",
+        timer: 1500,
+        width: 600,
+        padding: "3em",
+        color: "#c23a63",
+        background: "#fff)",
+        backdrop: `
+            rgba(0,0,123,0.4)
+            left top
+            no-repeat
+          `,
+      });
+      navigate("/");
+      hideModal();
+      setInput({
+        name: "",
+        password: "",
+        email: "",
+        image: "",
+        phone: "",
+        username: "",
+      });
+      setPreview(null);
+      return;
+    } catch (error) {
+      console.log("register failed : ", error);
+    }
   });
   return (
     <>
       {isOnSignUp ? (
         <>
-          <div className="flex justify-center flex-col items-center py-10 ">
+          <div className="flex justify-center flex-col items-center">
             <div className="loginFormCard px-[33px] max-w-[500px]">
               <div className="header mb-10 text-center">
                 <h1 className=" leading-[49px] text-transparent font-normal text-4xl bg-clip-text bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]">
@@ -77,42 +148,55 @@ const Login = () => {
               </div>
               <div className="form flex flex-col">
                 <form
-                  className="flex flex-col gap-y-5"
-                  onSubmit={(e) => handleLogin.mutate(e)}
+                  className="flex flex-col gap-y-2"
+                  onSubmit={(e) => handleRegister.mutate(e)}
                 >
                   <input
                     type="text"
                     placeholder="Name"
                     name="name"
-                    onChange={handleInput}
-                    value={loginData.email}
+                    onChange={handleInputRegister}
+                    value={input.name}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
                   />
                   <input
                     type="text"
                     placeholder="Username"
                     name="username"
-                    onChange={handleInput}
-                    value={loginData.email}
+                    onChange={handleInputRegister}
+                    value={input.username}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
                   />
                   <input
                     type="email"
                     placeholder="Email"
                     name="email"
-                    onChange={handleInput}
-                    value={loginData.email}
+                    onChange={handleInputRegister}
+                    value={input.email}
+                    className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Phone"
+                    name="phone"
+                    onChange={handleInputRegister}
+                    value={input.phone}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
                   />
                   <input
                     type="password"
                     placeholder="Password"
                     name="password"
-                    onChange={handleInput}
-                    value={loginData.password}
+                    onChange={handleInputRegister}
+                    value={input.password}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
                   />
-
+                  <input
+                    type="file"
+                    id="upload"
+                    name="image"
+                    onChange={handleInputRegister}
+                  />
                   <Button className="mt-5 bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] text-white w-full rounded-[50px]">
                     Register
                   </Button>
@@ -134,7 +218,7 @@ const Login = () => {
         </>
       ) : (
         <>
-          <div className="flex justify-center flex-col items-center py-10 ">
+          <div className="flex justify-center flex-col items-center py-5">
             <div className="loginFormCard px-[33px] max-w-[500px]">
               <div className="header mb-10 text-center">
                 <h1 className=" leading-[49px] text-transparent font-normal text-4xl bg-clip-text bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]">
@@ -143,7 +227,7 @@ const Login = () => {
               </div>
               <div className="form flex flex-col">
                 <form
-                  className="flex flex-col gap-y-5"
+                  className="flex flex-col gap-y-2"
                   onSubmit={(e) => handleLogin.mutate(e)}
                 >
                   <input

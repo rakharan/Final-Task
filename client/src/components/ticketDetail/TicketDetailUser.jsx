@@ -1,6 +1,6 @@
 import React from "react";
 
-const TicketDetail = () => {
+const TicketDetailUser = () => {
   return (
     <div className="w-[800px] pb-4 ">
       <div className="header flex justify-between">
@@ -133,4 +133,4 @@ const TicketDetail = () => {
   );
 };
 
-export default TicketDetail;
+export default TicketDetailUser;

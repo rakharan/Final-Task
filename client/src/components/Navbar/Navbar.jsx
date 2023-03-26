@@ -10,19 +10,20 @@ import { API } from "../../config/api";
 const Navbar = () => {
   const navigate = useNavigate();
   const { statesFromGlobalContext } = useContext(GlobalContext);
-  const {
-    setIsModalVisible,
-    setIsLoginModal,
-    setIsSignUpModal,
-    currentUser,
-    setPreview,
-  } = statesFromGlobalContext;
+  const { setIsModalVisible, setIsLoginModal, setIsSignUpModal, setPreview } =
+    statesFromGlobalContext;
   const [state, dispatch] = useContext(UserContext);
   const [isProfileHovered, setIsProfileHovered] = useState(false);
-  let { data: profile } = useQuery("ProfileCache", async () => {
-    const response = await API.get("/user/" + state.user.id);
-    return response.data.data;
-  });
+  let { data: profile } = useQuery(
+    "ProfileCache",
+    async () => {
+      const response = await API.get("/user/" + state.user.id);
+      return response.data.data;
+    },
+    {
+      refetchInterval: 1000,
+    }
+  );
   const logout = (e) => {
     setPreview(null);
     dispatch({
@@ -33,17 +34,19 @@ const Navbar = () => {
   return (
     <>
       <div className="navbar h-16  flex justify-between items-center shadow-navbarShadow px-4 md:px-8 lg:px-20">
-        <div className="leftNavbar flex  ">
-          <NavLink to="/" className="flex gap-x-4 items-center">
-            <span className="text-transparent font-normal text-4xl bg-clip-text bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]">
-              LandTick
-            </span>
-            <img
-              src="/assets/LandTickIcon.png"
-              alt="Trainicon"
-              className="w-20"
-            />
-          </NavLink>
+        <div className="leftNavbar flex">
+          <div className="">
+            <NavLink to="/" className="flex gap-x-4 items-center">
+              <span className="text-transparent font-normal text-3xl bg-clip-text bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]">
+                LandTick
+              </span>
+              <img
+                src="/assets/LandTickIcon.png"
+                alt="Trainicon"
+                className=" w-14"
+              />
+            </NavLink>
+          </div>
         </div>
         <div className="rightNavbar flex gap-x-[26px] items-center">
           {state.isLogin ? (
@@ -136,7 +139,7 @@ const Navbar = () => {
                 {/* admin dropdown */}
                 {state.user.role === "admin" && isProfileHovered ? (
                   <>
-                    <ul className="absolute top-[60px] bg-white text-black w-60 right-0 rounded-[10px] z-50">
+                    <ul className="absolute top-[40px] bg-white text-black w-60 right-0 rounded-[10px] z-50">
                       <NavLink
                         to="/admin/transactionList"
                         className="transactionList"
@@ -160,6 +163,17 @@ const Navbar = () => {
                             />
                           </div>
                           Add Ticket
+                        </li>
+                      </NavLink>
+                      <NavLink to="/admin/addStation" className="addStation">
+                        <li className="p-4 flex gap-x-4 border-t-[2px]">
+                          <div className="w-[24px]">
+                            <LazyLoadImage
+                              src="/assets/addTicket.png"
+                              alt="dropdown"
+                            />
+                          </div>
+                          Add Station
                         </li>
                       </NavLink>
                       <NavLink
@@ -214,44 +228,6 @@ const Navbar = () => {
               </NavLink>
             </>
           )}
-          {/* {state.isLogin ? (
-            <>
-              {state.user.role !== "admin" ? (
-                <>
-                  <h1>User</h1>
-                </>
-              ) : (
-                <>
-                  <h1>Admin</h1>
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              <Button
-                className=" text-transparent font-[Sen] font-black text-2xl  hover:text-white hover:bg-gradient-to-r hover:from-[#EC7AB7] hover:to-[#EC7A7A] "
-                onClick={() => {
-                  setIsModalVisible(true);
-                  setIsLoginModal(true);
-                }}
-              >
-                <span className="bg-clip-text bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]">
-                  Login
-                </span>
-              </Button>
-              <Button className=" text-transparent font-[Sen] font-black text-2xl  hover:text-white hover:bg-gradient-to-r hover:from-[#EC7AB7] hover:to-[#EC7A7A] ">
-                <span
-                  className="bg-clip-text bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]"
-                  onClick={() => {
-                    setIsModalVisible(true);
-                    setIsSignUpModal(true);
-                  }}
-                >
-                  Daftar
-                </span>
-              </Button>
-            </>
-          )} */}
         </div>
       </div>
     </>

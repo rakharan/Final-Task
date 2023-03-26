@@ -11,6 +11,7 @@ type TicketRepository interface {
 	CreateTicket(ticket models.Ticket) (models.Ticket, error)
 	GetTicket(ID int) (models.Ticket, error)
 	CreateTransactionQty(transaction models.Transaction) (models.Transaction, error)
+	DeleteTicket(ticket models.Ticket) (models.Ticket, error)
 }
 
 func RepositoryTicket(db *gorm.DB) *repository {
@@ -39,4 +40,10 @@ func (r *repository) GetTicket(ID int) (models.Ticket, error) {
 func (r *repository) CreateTransactionQty(transaction models.Transaction) (models.Transaction, error) {
 	err := r.db.Create(&transaction).Error
 	return transaction, err
+}
+
+func (r *repository) DeleteTicket(ticket models.Ticket) (models.Ticket, error) {
+	err := r.db.Delete(&ticket).Error
+
+	return ticket, err
 }

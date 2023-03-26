@@ -36,9 +36,9 @@ func (r *repository) CreateStation(station models.Station) (models.Station, erro
 	err := r.db.Create(&station).Error
 	return station, err
 }
-func (r *repository) UpdateStation(ticket models.Station) (models.Station, error) {
-	err := r.db.Save(&ticket).Error
-	return ticket, err
+func (r *repository) UpdateStation(station models.Station) (models.Station, error) {
+	err := r.db.Model(&models.Station{}).Where("id = ?", station.ID).Updates(models.Station{Name: station.Name, City: station.City}).Error
+	return station, err
 }
 func (r *repository) DeleteStation(station models.Station) (models.Station, error) {
 	var stations models.Station

@@ -16,11 +16,15 @@ import (
 )
 
 type handlerTicket struct {
-	TicketRepository repositories.TicketRepository
+	TicketRepository  repositories.TicketRepository
+	StationRepository repositories.StationRepository
 }
 
-func HandlerTicket(TicketRepository repositories.TicketRepository) *handlerTicket {
-	return &handlerTicket{TicketRepository}
+func HandlerTicket(TicketRepository repositories.TicketRepository, StationRepository repositories.StationRepository) *handlerTicket {
+	return &handlerTicket{
+		TicketRepository:  TicketRepository,
+		StationRepository: StationRepository,
+	}
 }
 
 func (h *handlerTicket) FindAllTickets(c echo.Context) error {
@@ -44,6 +48,10 @@ func (h *handlerTicket) CreateTicket(c echo.Context) error {
 	arrivalTime := c.FormValue("arrival_time")
 	price, _ := strconv.Atoi(c.FormValue("price"))
 	stock, _ := strconv.Atoi(c.FormValue("qty"))
+
+	startStation, _ := h.StationRepository.GetStationById(startStationId)
+	endStation, _ := h.StationRepository.GetStationById(destinationStationId)
+
 	request := models.Ticket{
 		TrainName:      c.FormValue("train_name"),
 		TrainType:      c.FormValue("train_type"),
@@ -66,6 +74,8 @@ func (h *handlerTicket) CreateTicket(c echo.Context) error {
 		TrainName:      request.TrainName,
 		TrainType:      request.TrainType,
 		StartStationID: request.StartStationID,
+		StartStation:   startStation,
+		EndStation:     endStation,
 		EndStationID:   request.EndStationID,
 		StartDate:      request.StartDate,
 		StartTime:      request.StartTime,
@@ -81,12 +91,13 @@ func (h *handlerTicket) CreateTicket(c echo.Context) error {
 	}
 
 	ticketResponse := models.Ticket{
+		ID:             ticket.ID,
 		TrainName:      ticket.TrainName,
 		TrainType:      ticket.TrainType,
-		StartStationID: ticket.StartStation.ID,
 		StartStation:   ticket.StartStation,
-		EndStationID:   ticket.EndStationID,
 		EndStation:     ticket.EndStation,
+		StartStationID: ticket.StartStationID,
+		EndStationID:   ticket.EndStationID,
 		StartDate:      ticket.StartDate,
 		StartTime:      ticket.StartTime,
 		ArrivalTime:    ticket.ArrivalTime,
@@ -142,4 +153,18 @@ func (h *handlerTicket) CreateTransactionQty(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Code: http.StatusInternalServerError, Message: err.Error()})
 	}
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: "Success", Data: MyTicketQty})
+}
+
+func (h *handlerTicket) DeleteTicket(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	ticket, err := h.TicketRepository.GetTicket(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Code: http.StatusOK, Message: err.Error()})
+	}
+
+	data, err := h.TicketRepository.DeleteTicket(ticket)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Code: http.StatusInternalServerError, Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK, dto.SuccessResult{Status: "Delete Success", Data: data})
 }

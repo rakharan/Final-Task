@@ -1,13 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 import Login from "../components/auth/Login";
 import SignUp from "../components/auth/SignUp";
-import Modal from "../components/Modal/Modal";
+import ModalManual from "../components/Modal/ModalManual";
 import Button from "../parts/Button";
-import { Checkbox } from "flowbite-react";
+import { Checkbox, Modal } from "flowbite-react";
 import { GlobalContext } from "../context/GlobalContext";
 import { useQuery } from "react-query";
 import { API } from "../config/api";
 import { useNavigate } from "react-router-dom";
+import Ticket from "../components/Ticket/Ticket";
 const Home = () => {
   const navigate = useNavigate();
   const { statesFromGlobalContext, functionHandlers } =
@@ -19,23 +20,41 @@ const Home = () => {
     setIsLoginModal,
     isSignUpModal,
     setIsSignUpModal,
+    showTicketModal,
+    setShowTicketModal,
+    showTicketSuccess,
+    setShowTicketSuccess,
   } = statesFromGlobalContext;
 
-  const { price } = functionHandlers;
+  const [formSearch, setFormSearch] = useState({
+    start_station_id: "",
+    destination_station_id: "",
+    start_date: "",
+    qty: "",
+  });
 
-  const [showTicketModal, setShowTicketModal] = useState(false);
+  const handleChange = (e) => {
+    setFormSearch({
+      ...formSearch,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   let { data: stations, refetch } = useQuery("stationsCache", async () => {
     const response = await API.get("/stations");
     return response.data.data.stations;
   });
+
   useEffect(() => {
     refetch();
   }, [stations]);
+
   const hideModalHandler = () => {
     setIsModalVisible(false);
     setIsSignUpModal(false);
     setIsLoginModal(false);
     setShowTicketModal(false);
+    setShowTicketSuccess(false);
   };
 
   let { data: tickets } = useQuery("ticketCache", async () => {
@@ -44,48 +63,64 @@ const Home = () => {
     return response.data.data;
   });
 
-  const HandleBuy = async (id) => {
-    try {
-      const response = await API.post(`/create-trans/${id}`);
-      console.log(response);
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
+  const [filteredTicket, setFilteredTicket] = useState([]);
+  const handleFilter = (e) => {
+    e.preventDefault();
+    const filtered = tickets.filter((ticket) => {
+      return (
+        (formSearch.start_station_id == "" ||
+          ticket.StartStationID == formSearch.start_station_id) &&
+        (formSearch.destination_station_id == "" ||
+          ticket.EndStationID == formSearch.destination_station_id) &&
+        (formSearch.start_date == "" ||
+          ticket.start_date == formSearch.start_date) &&
+        formSearch.qty <= ticket.qty
+      );
+    });
+    setFilteredTicket(filtered);
   };
+
+  const resetFilter = () => {
+    setFilteredTicket([]);
+  };
+
+  const showTicketModalHandler = () => {
+    setShowTicketModal(true);
+  };
+
   return (
     <>
-      {isModalVisible ? (
-        <Modal onClick={hideModalHandler}>
+      {isModalVisible && (
+        <ModalManual onClick={hideModalHandler}>
           {isLoginModal ? <Login /> : <></>}
           {isSignUpModal ? <SignUp /> : <></>}
-        </Modal>
-      ) : (
-        <></>
+        </ModalManual>
       )}
-
-      {showTicketModal ? (
-        <div>
-          <Modal onClick={hideModalHandler}>
-            <p>
-              Tiket anda berhasil ditambahkan silakan segera melakukan
-              pembayaran
-            </p>{" "}
-            <br />
-            <p>
-              Klik{" "}
+      {showTicketModal && (
+        <>
+          <ModalManual onClick={hideModalHandler}>
+            <Login />
+          </ModalManual>
+        </>
+      )}
+      {showTicketSuccess && (
+        <>
+          <ModalManual onClick={hideModalHandler}>
+            <div className="p-4 text-center">
+              Tiket anda berhasil di tambahkan silakan segera melakukan
+              pembayaran <br />{" "}
               <span
+                className="font-bold cursor-pointer"
                 onClick={() => {
                   navigate("/myTicket");
+                  hideModalHandler();
                 }}
               >
-                disini
+                Klik disini
               </span>
-            </p>
-          </Modal>
-        </div>
-      ) : (
-        <></>
+            </div>
+          </ModalManual>
+        </>
       )}
 
       <div className="min-h-screen mb-20">
@@ -124,7 +159,18 @@ const Home = () => {
           </div>
           <div className="flex-[80%] bg-white p-3 rounded-r-md">
             <form>
-              <h4 className="font-semibold">Tiket Kereta Api</h4>
+              <div className="flex justify-between">
+                <h4 className="font-semibold">Tiket Kereta Api</h4>
+
+                <span
+                  className="cursor-pointer"
+                  onClick={() => {
+                    resetFilter();
+                  }}
+                >
+                  Reset Filter
+                </span>
+              </div>
               <div className="flex">
                 <div className="flex-[50%]">
                   <div>
@@ -137,12 +183,11 @@ const Home = () => {
                     <select
                       name="start_station_id"
                       id="start_station_id"
-                      // onChange={handleChange}
+                      onChange={handleChange}
                       className="block w-full text-sm focus:ring-red-300 focus:border-red-500 text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
                     >
-                      <option hidden>Jakarta</option>
-                      {stations?.map((item, index) => (
-                        <option key={index} value={item?.id}>
+                      {stations?.map((item) => (
+                        <option key={item.id} value={item?.id}>
                           {item.city}
                         </option>
                       ))}
@@ -157,8 +202,8 @@ const Home = () => {
                         Tanggal Berangkat
                       </label>
                       <input
-                        // onChange={handleChange}
-                        // value={formSearch.start_date}
+                        onChange={handleChange}
+                        value={formSearch.start_date}
                         type="date"
                         id="start_date"
                         name="start_date"
@@ -196,12 +241,11 @@ const Home = () => {
                     <select
                       name="destination_station_id"
                       id="destination"
-                      // onChange={handleChange}
+                      onChange={handleChange}
                       className="block w-full text-sm focus:ring-red-300 focus:border-red-500 text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
                     >
-                      <option hidden>Cirebon</option>
-                      {stations?.map((item, index) => (
-                        <option key={index} value={item?.id}>
+                      {stations?.map((item) => (
+                        <option key={item.id} value={item?.id}>
                           {item.city}
                         </option>
                       ))}
@@ -220,12 +264,24 @@ const Home = () => {
                         name="qty"
                         id="qty"
                         className="border text-center border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-300 focus:border-red-500 block w-full p-2.5"
-                        // onChange={handleChange}
-                        // value={formSearch.qty}
+                        onChange={handleChange}
+                        value={formSearch.qty}
                       >
-                        <option value="" disabled>
-                          Dewasa ≥ 3 Tahun
-                        </option>
+                        <optgroup
+                          label="
+                          Dewasa ≥ 3 Tahun"
+                        >
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                        </optgroup>
                       </select>
                     </div>
                     <div className="mr-2">
@@ -240,15 +296,24 @@ const Home = () => {
                         name="anak"
                         id="anak"
                         className="border text-center border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-300 focus:border-red-500 block w-full p-2.5"
-                        // onChange={handleChange}
+                        onChange={handleChange}
                       >
-                        <option value="" disabled>
-                          Anak - Anak ≤ 3 Tahun
-                        </option>
+                        <optgroup label="Anak - Anak ≤ 3 Tahun">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                        </optgroup>
                       </select>
                     </div>
                     <Button
-                      onClick={(e) => handleSearch(e)}
+                      onClick={(e) => handleFilter(e)}
                       gradientDuoTone="pinkToOrange"
                       type="submit"
                       className="w-full text-white mt-6 focus:ring-4 focus:outline-none focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-1 text-center bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]"
@@ -264,239 +329,21 @@ const Home = () => {
         <div className="container mx-auto mt-5 ">
           <div className="w-[90%]  mx-auto">
             <div className="flex justify-around font-bold">
-              <h2 className="font-bold mr-28">Nama Kereta</h2>
+              <h2 className="font-bold mr-14">Nama Kereta</h2>
               <h2 className="font-bold">Berangkat</h2>
-              <h2 className="font-bold ">Tiba</h2>
+              <h2 className="font-bold opacity-0  ">Tiba</h2>
+              <h2 className="font-bold">Tiba</h2>
               <h2 className="font-bold">Durasi</h2>
               <h2 className="font-bold">Harga Per Orang</h2>
             </div>
           </div>
-          {tickets?.map((ticket, index) => {
-            return (
-              <div
-                key={index}
-                className="flex flex-col mt-5 gap-y-8"
-                onClick={() => {
-                  setShowTicketModal(true);
-                  HandleBuy(ticket.id);
-                }}
-              >
-                <div className="flex justify-center">
-                  <div className="w-[90%] h-[100px] bg-white shadow-navbarShadow rounded-lg overflow-hidden flex justify-around items-center">
-                    <div className="trainName flex flex-col">
-                      <span className="font-[Sen] font-black text-lg">
-                        {ticket.train_name}
-                      </span>
-                      <span>{ticket.train_type}</span>
-                    </div>
-                    <div className="start flex items-center">
-                      <div className="flex flex-col">
-                        <span className="font-[Sen] font-black text-lg">
-                          {ticket.start_time}
-                        </span>
-                        <span>{ticket.StartStation.name}</span>
-                      </div>
-                    </div>
-                    <div className="arrival flex flex-col">
-                      <span className="font-[Sen] font-black text-lg">
-                        {ticket.arrival_time}
-                      </span>
-                      <span>{ticket.EndStation.name}</span>
-                    </div>
-                    <div className="duration">
-                      <span>5j 0m</span>
-                    </div>
-                    <div>
-                      <span>{price.format(ticket.price)}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+
+          <Ticket
+            filteredTickets={filteredTicket}
+            onClickHide={hideModalHandler}
+            onClickShow={showTicketModalHandler}
+          />
         </div>
-        {/* <div className="sort flex justify-center -mt-5">
-          <div className="w-[90%] shadow-navbarShadow bg-white flex rounded-xl overflow-hidden">
-            <div className="leftContentSort bg-[#F2F2F2] flex-[1_1_0%]">
-              <div className="border-l-[9px] border-[#E67E22] flex h-[53px] gap-x-2 items-center just mt-3">
-                <img
-                  src="/assets/smallTrain.png"
-                  alt="smallTrain"
-                  className="w-[30px] h-[30px]"
-                />
-                <span className="font-[Sen] text-lg font-light">
-                  Tiket Kereta Api
-                </span>
-              </div>
-            </div>
-            <div className="rightContentSort flex-[4_1_0%]  px-[30px] py-2 h-[236px]">
-              <span>Tiket Kereta Api</span>
-              <div className="flex justify-between items-center py-2 h-full">
-                <div className="leftContent w-full flex flex-col justify-around flex-1">
-                  <div className="flex flex-col">
-                    <span>Asal</span>
-                    <input
-                      type="text"
-                      placeholder="Jakarta"
-                      className="border-2 w-full"
-                    />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col items-center">
-                      <span>Tanggal Berangkat</span>
-                      <input
-                        type="date"
-                        name="startDate"
-                        id=""
-                        className="border-2"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        type="checkbox"
-                        name="twoway"
-                        id="twoway"
-                        className="border-2"
-                      />
-                      <label htmlFor="twoway">Pulang Pergi</label>
-                    </div>
-                  </div>
-                </div>
-                <div className="midImage w-[50px]">
-                  <img
-                    src="/assets/Rounded.png"
-                    alt="rounded"
-                    className="w-full"
-                  />
-                </div>
-                <div className="rightContent w-full flex flex-col justify-around flex-1">
-                  <div className="flex flex-col">
-                    <span>Tujuan</span>
-                    <input
-                      type="text"
-                      placeholder="Surabaya"
-                      className="border-2 w-full"
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <div className="">
-                      <label htmlFor="dewasa">Dewasa</label>
-                      <input
-                        type="number"
-                        name="dewasa"
-                        id=""
-                        className="border-2 h-[30px]"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <span>Dewasa</span>
-                      <input
-                        type="number"
-                        name="dewasa"
-                        id=""
-                        className="border-2 h-[30px]"
-                      />
-                    </div>
-                    <div>
-                      <Button className=" h-[30px]">Cari Tiket</Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mainContent mt-20">
-          <div className="flex justify-center">
-            <div className=" w-[90%] header flex justify-around text-center ">
-              <span>Nama Kereta</span>
-              <span>Berangkat</span>
-              <span>Tiba</span>
-              <span>Durasi</span>
-              <span>Harga Per Orang</span>
-            </div>
-          </div>
-          <div className="flex flex-col mt-5 gap-y-8">
-            <div className="flex justify-center">
-              <div className="w-[90%] h-[100px] bg-white shadow-navbarShadow rounded-lg overflow-hidden flex justify-around items-center">
-                <div className="trainName flex flex-col">
-                  <span className="font-[Sen] font-black text-lg">
-                    Argo Wilis
-                  </span>
-                  <span>Eksekutif</span>
-                </div>
-                <div className="start flex items-center">
-                  <div className="flex flex-col">
-                    <span className="font-[Sen] font-black text-lg">05:00</span>
-                    <span>Gambir</span>
-                  </div>
-                </div>
-                <div className="arrival flex flex-col">
-                  <span className="font-[Sen] font-black text-lg">10:05</span>
-                  <span>Surabaya</span>
-                </div>
-                <div className="duration">
-                  <span>5j 0m</span>
-                </div>
-                <div>
-                  <span>Rp. 250.000</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <div className="w-[90%] h-[100px] bg-white shadow-navbarShadow rounded-lg overflow-hidden flex justify-around items-center">
-                <div className="trainName flex flex-col">
-                  <span className="font-[Sen] font-black text-lg">
-                    Argo Wilis
-                  </span>
-                  <span>Eksekutif</span>
-                </div>
-                <div className="start flex items-center">
-                  <div className="flex flex-col">
-                    <span className="font-[Sen] font-black text-lg">05:00</span>
-                    <span>Gambir</span>
-                  </div>
-                </div>
-                <div className="arrival flex flex-col">
-                  <span className="font-[Sen] font-black text-lg">10:05</span>
-                  <span>Surabaya</span>
-                </div>
-                <div className="duration">
-                  <span>5j 0m</span>
-                </div>
-                <div>
-                  <span>Rp. 250.000</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <div className="w-[90%] h-[100px] bg-white shadow-navbarShadow rounded-lg overflow-hidden flex justify-around items-center">
-                <div className="trainName flex flex-col">
-                  <span className="font-[Sen] font-black text-lg">
-                    Argo Wilis
-                  </span>
-                  <span>Eksekutif</span>
-                </div>
-                <div className="start flex items-center">
-                  <div className="flex flex-col">
-                    <span className="font-[Sen] font-black text-lg">05:00</span>
-                    <span>Gambir</span>
-                  </div>
-                </div>
-                <div className="arrival flex flex-col">
-                  <span className="font-[Sen] font-black text-lg">10:05</span>
-                  <span>Surabaya</span>
-                </div>
-                <div className="duration">
-                  <span>5j 0m</span>
-                </div>
-                <div>
-                  <span>Rp. 250.000</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </>
   );

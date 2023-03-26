@@ -44,7 +44,7 @@ const AddTicket = () => {
       const response = await API.post("/ticket", formData);
       if (response.status === 200) {
         Swal.fire({
-          title: "New product has been added!",
+          title: "New Ticket has been added!",
           icon: "success",
           timer: 1500,
           width: 600,
@@ -97,6 +97,7 @@ const AddTicket = () => {
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
               value={form.train_name}
+              required
             />
             <label htmlFor="trainType">Jenis Kereta</label>
             <select
@@ -104,7 +105,7 @@ const AddTicket = () => {
               id="trainType"
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
-              required={true}
+              required
               value={form.train_type}
             >
               <option hidden>Type of Train</option>
@@ -124,6 +125,7 @@ const AddTicket = () => {
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
               value={form.start_date}
+              required
             />
             <label htmlFor="startStation">Stasiun Keberangkatan</label>
             <select
@@ -132,9 +134,10 @@ const AddTicket = () => {
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
               value={form.start_station_id}
+              required
             >
-              {stations?.map((element, index) => (
-                <option key={index} value={element.id}>
+              {stations?.map((element) => (
+                <option key={element.id} value={element.id}>
                   {element.name}
                 </option>
               ))}
@@ -147,6 +150,7 @@ const AddTicket = () => {
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
               value={form.start_time}
+              required
             />
             <label htmlFor="destination_station_id">Stasiun Tujuan</label>
             <select
@@ -155,9 +159,10 @@ const AddTicket = () => {
               id="destination_station_id"
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               value={form.destination_station_id}
+              required
             >
-              {stations?.map((element, index) => (
-                <option key={index} value={element.id}>
+              {stations?.map((element) => (
+                <option key={element.id} value={element.id}>
                   {element.name}
                 </option>
               ))}
@@ -170,6 +175,7 @@ const AddTicket = () => {
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
               value={form.arrival_time}
+              required
             />
             <label htmlFor="price">Harga Tiket</label>
             <input
@@ -180,6 +186,7 @@ const AddTicket = () => {
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
               value={form.price}
+              required
             />
             <label htmlFor="qty">Quantity</label>
             <input
@@ -190,6 +197,7 @@ const AddTicket = () => {
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
               value={form.qty}
+              required
             />
             <div className="flex justify-center mt-10 w-full">
               <Button className="text-white bg-[#0ACF83] border-transparent">

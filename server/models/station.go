@@ -1,7 +1,7 @@
 package models
 
 type Station struct {
-	ID   int    `json:"id" gorm:"primary_key:auto_increment"`
+	ID   int    `json:"id" gorm:"primary_key"`
 	Name string `json:"name" gorm:"type: varchar(255)"`
 	City string `json:"city" gorm:"type: varchar(255)"`
 }

@@ -17,6 +17,7 @@ type TransactionRepository interface {
 	Payment(payment models.Transaction) (models.Transaction, error)
 	GetPaymentByIdTrans(ID int) (models.Transaction, error)
 	UpdateTransaction(status string, ID string) (models.Transaction, error)
+	DeleteTransaction(transaction models.Transaction) (models.Transaction, error)
 }
 
 func RepositoryTransaction(db *gorm.DB) *repository {
@@ -42,6 +43,7 @@ func (r *repository) CreateTransaction(trans models.Transaction) (models.Transac
 
 	return trans, err
 }
+
 func (r *repository) GetTransaction(ID int) (models.Transaction, error) {
 	var transaction models.Transaction
 	err := r.db.Preload("User").Preload("Ticket.StartStation").Preload("Ticket.EndStation").First(&transaction, ID).Error
@@ -97,4 +99,10 @@ func (r *repository) GetPaymentByIdTrans(ID int) (models.Transaction, error) {
 	err := r.db.Preload("Ticket").Where("transaction_id = ?", ID).Find(&payment).Error
 
 	return payment, err
+}
+
+func (r *repository) DeleteTransaction(transaction models.Transaction) (models.Transaction, error) {
+	err := r.db.Delete(&transaction).Error
+
+	return transaction, err
 }
