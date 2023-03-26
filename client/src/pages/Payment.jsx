@@ -23,6 +23,8 @@ const Payment = () => {
     try {
       const response = await API.get(`/payments/` + id);
       const token = response.data.data.token;
+      console.log(response);
+      console.log(token);
       window.snap.pay(token, {
         onSuccess: function (result) {
           console.log(result);
@@ -47,7 +49,7 @@ const Payment = () => {
     //change this to the script source you want to load, for example this is snap.js sandbox env
     const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
     //change this according to your client-key
-    const myMidtransClientKey = "SB-Mid-client-KPg1DcWie7s9i0Wt";
+    const myMidtransClientKey = import.meta.env.VITE_MIDTRANS_CLIENT_KEY;
 
     let scriptTag = document.createElement("script");
     scriptTag.src = midtransScriptUrl;
@@ -60,6 +62,7 @@ const Payment = () => {
       document.body.removeChild(scriptTag);
     };
   }, []);
+  console.log(currentTicketData);
   return (
     <>
       <>

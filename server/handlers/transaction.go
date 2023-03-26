@@ -130,7 +130,7 @@ func (h *handlerTransaction) PaymentTransaction(c echo.Context) error {
 
 	req := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  strconv.Itoa(payment.ID),
+			OrderID:  strconv.Itoa(payment.TransactionID),
 			GrossAmt: int64(payment.Total),
 		},
 		CreditCard: &snap.CreditCardDetails{
