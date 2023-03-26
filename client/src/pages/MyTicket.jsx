@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const MyTicket = () => {
   const navigate = useNavigate();
   const { statesFromGlobalContext } = useContext(GlobalContext);
-  const { setCurrentTicket, tempId, setTempId } = statesFromGlobalContext;
+  const { setTempId } = statesFromGlobalContext;
   const [state] = useContext(UserContext);
   const [showDetail, setShowDetail] = useState(false);
   const handleClose = () => {

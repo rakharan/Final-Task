@@ -5,7 +5,7 @@ import { API } from "../../config/api";
 import { UserContext } from "../../context/UserContext";
 import Swal from "sweetalert2";
 
-const Ticket = ({ filteredTickets }) => {
+const Ticket = ({ filteredTickets, onClickShow }) => {
   const { statesFromGlobalContext, functionHandlers } =
     useContext(GlobalContext);
   const { setShowTicketSuccess } = statesFromGlobalContext;
@@ -63,7 +63,7 @@ const Ticket = ({ filteredTickets }) => {
             onClick={() => {
               {
                 if (state.isLogin === false) {
-                  props.onClickShow(true);
+                  onClickShow(true);
                 } else if (state.user.role === "admin") {
                   Swal.fire({
                     title: "You are an admin!",
@@ -156,7 +156,7 @@ const Ticket = ({ filteredTickets }) => {
               onClick={() => {
                 {
                   if (state.isLogin === false) {
-                    props.onClickShow(true);
+                    onClickShow(true);
                   } else {
                     Swal.fire({
                       title: "Are you sure?",
