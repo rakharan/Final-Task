@@ -140,6 +140,7 @@ func (h *handlerTransaction) PaymentTransaction(c echo.Context) error {
 		CustomerDetail: &midtrans.CustomerDetails{
 			FName: payment.User.Name,
 			Email: payment.User.Email,
+			Phone: payment.User.Phone,
 		},
 	}
 
