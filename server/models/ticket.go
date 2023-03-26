@@ -32,7 +32,7 @@ type TicketResponse struct {
 	EndStationID   int             `json:"destination_station_id,string,omitempty"`
 	EndStation     StationResponse `json:"destination_station"`
 	Price          int             `json:"price,string,omitempty"`
-	Qty            int             `json:"qty,string,omitempty"`
+	Stock          int             `json:"stock,string,omitempty"`
 	UserID         int             `json:"user_id"`
 }
 
@@ -41,7 +41,7 @@ type TicketUserResponse struct {
 	Fullname  string `json:"fullname"`
 	StationID int    `json:"station_id"`
 	Price     int    `json:"price"`
-	Qty       int    `json:"qty"`
+	Stock     int    `json:"stock"`
 }
 
 func (Ticket) TableName() string {
@@ -55,16 +55,3 @@ func (TicketResponse) TableName() string {
 func (TicketUserResponse) TableName() string {
 	return "tickets"
 }
-
-// type Ticket struct {
-// 	ID                   int       `json:"id" gorm:"primary_key:auto_increment"`
-// 	TrainName            string    `json:"train_name" gorm:"type: varchar(255)"`
-// 	TrainType            string    `json:"train_type" gorm:"type: varchar(255)"`
-// 	StartStationID       int       `json:"start_station_id" `
-// 	DestinationStationID int       `json:"destination_station_id"`
-// 	StartDate            time.Time `json:"start_date"`
-// 	StartTime            time.Time `json:"start_time"`
-// 	ArrivalTime          time.Time `json:"arrival_time"`
-// 	Price                int       `json:"price" gorm:"type: int"`
-// 	Stock                int       `json:"qty" gorm:"type: int"`
-// }
