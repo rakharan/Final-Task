@@ -97,7 +97,7 @@ func (r *repository) Payment(payment models.Transaction) (models.Transaction, er
 
 func (r *repository) GetPaymentByIdTrans(ID int) (models.Transaction, error) {
 	var payment models.Transaction
-	err := r.db.Preload("Ticket").Where("transaction_id = ?", ID).Find(&payment).Error
+	err := r.db.Preload("Ticket").Preload("User").Where("transaction_id = ?", ID).Find(&payment).Error
 
 	return payment, err
 }
