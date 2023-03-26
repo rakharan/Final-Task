@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"landtick/models"
 
 	"gorm.io/gorm"
@@ -69,7 +70,7 @@ func (r *repository) GetTicketTransaction(UserID int) ([]models.Transaction, err
 func (r *repository) UpdateTransaction(status string, ID string) (models.Transaction, error) {
 	var transaction models.Transaction
 	r.db.Preload("Ticket").Preload("User").First(&transaction, "transaction_id = ?", ID)
-
+	fmt.Println(transaction)
 	// if status != transaction.Status && status == "success" {
 	// 	var ticket models.Ticket
 	// 	r.db.First(&ticket, transaction.Ticket.ID)
@@ -78,7 +79,7 @@ func (r *repository) UpdateTransaction(status string, ID string) (models.Transac
 	// }
 
 	transaction.Status = status
-	error := r.db.Save(&transaction).Error
+	error := r.db.Debug().Save(&transaction).Error
 	return transaction, error
 }
 

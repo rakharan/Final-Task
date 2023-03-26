@@ -16,5 +16,5 @@ type TicketRequest struct {
 }
 
 type TransTicket struct {
-	Qty int `json:"qty" form:"qty"`
+	Stock int `json:"stock" form:"stock"`
 }

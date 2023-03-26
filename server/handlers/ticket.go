@@ -134,7 +134,7 @@ func (h *handlerTicket) CreateTransactionQty(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Code: http.StatusInternalServerError, Message: err.Error()})
 	}
-	Total := ticket.Price * request.Qty
+	Total := ticket.Price * request.Stock
 	userLogin := c.Get("userLogin")
 	userId := int(userLogin.(jwt.MapClaims)["id"].(float64))
 	transID := int(time.Now().Unix())
@@ -144,7 +144,7 @@ func (h *handlerTicket) CreateTransactionQty(c echo.Context) error {
 		TicketID: ticket.ID,
 		UserID:   userId,
 		Total:    Total,
-		Qty:      request.Qty,
+		Stock:    request.Stock,
 		Status:   "pending",
 	}
 

@@ -66,7 +66,7 @@ func (h *handlerTransaction) CreateTransaction(c echo.Context) error {
 		TicketID:      ticket.ID,
 		Total:         subTotal,
 		UserID:        userId,
-		Qty:           1,
+		Stock:         1,
 		Status:        "pending",
 	}
 

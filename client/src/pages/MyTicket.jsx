@@ -12,16 +12,10 @@ const MyTicket = () => {
   const navigate = useNavigate();
   const { statesFromGlobalContext } = useContext(GlobalContext);
   const { setTempId } = statesFromGlobalContext;
-  const [state] = useContext(UserContext);
   const [showDetail, setShowDetail] = useState(false);
   const handleClose = () => {
     setShowDetail(false);
   };
-
-  let { data: profile } = useQuery("profileCache", async () => {
-    const response = await API.get("/user/" + state.user.id);
-    return response.data.data;
-  });
 
   const [transactionDetail, setTransactionDetail] = useState([]);
 

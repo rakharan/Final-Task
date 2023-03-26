@@ -13,7 +13,7 @@ const AddTicket = () => {
     destination_station_id: "",
     arrival_time: "",
     price: "",
-    qty: "",
+    stock: "",
   });
 
   let { data: stations, refetch } = useQuery("stationsCache", async () => {
@@ -39,7 +39,7 @@ const AddTicket = () => {
       formData.set("destination_station_id", form.destination_station_id);
       formData.set("arrival_time", form.arrival_time);
       formData.set("price", form.price);
-      formData.set("qty", form.qty);
+      formData.set("stock", form.stock);
 
       const response = await API.post("/ticket", formData);
       if (response.status === 200) {
@@ -66,7 +66,7 @@ const AddTicket = () => {
           destination_station_id: "",
           arrival_time: "",
           price: "",
-          qty: "",
+          stock: "",
         });
       }
     } catch (error) {
@@ -191,12 +191,12 @@ const AddTicket = () => {
             <label htmlFor="qty">Quantity</label>
             <input
               type="number"
-              id="qty"
-              name="qty"
+              id="stock"
+              name="stock"
               min={0}
               className="h-[50px] p-2 rounded-lg border-2 border-[#B1B1B1]"
               onChange={handleChange}
-              value={form.qty}
+              value={form.stock}
               required
             />
             <div className="flex justify-center mt-10 w-full">
