@@ -9,10 +9,11 @@ import { useQuery } from "react-query";
 import { API } from "../config/api";
 import { useNavigate } from "react-router-dom";
 import Ticket from "../components/Ticket/Ticket";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const Home = () => {
   const navigate = useNavigate();
-  const { statesFromGlobalContext, functionHandlers } =
-    useContext(GlobalContext);
+  const { statesFromGlobalContext } = useContext(GlobalContext);
   const {
     isModalVisible,
     setIsModalVisible,
@@ -72,10 +73,6 @@ const Home = () => {
           ticket.StartStationID == formSearch.start_station_id) &&
         (formSearch.destination_station_id == "" ||
           ticket.EndStationID == formSearch.destination_station_id)
-      // &&
-      // (formSearch.start_date === "" ||
-      //   ticket.start_date === formSearch.start_date) &&
-      // formSearch.qty <= ticket.qty
     );
     setFilteredTicket(filtered);
     console.log("this is filtered data", filtered);
@@ -148,13 +145,14 @@ const Home = () => {
             </div>
           </div>
           <div className="rightContentJumbotron w-[562px] flex items-center justify-center">
-            <img src="/assets/Iklan.png" alt="" />
+            <LazyLoadImage effect="blur" src="/assets/Iklan.png" alt="iklan" />
           </div>
         </div>
         <div className="relative top-[-2rem] flex mx-40 rounded-md shadow-xl">
           <div className="bg-slate-300 flex-[20%] rounded-l-md">
             <div className="flex items-center bg-white mt-6 border-l-[9px] border-[#E67E22]">
-              <img
+              <LazyLoadImage
+                effect="blur"
                 src="/assets/smallTrain.png"
                 alt="train"
                 className="w-[30px] h-[30px]"
@@ -232,7 +230,8 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="flex items-start mt-7 mx-10">
-                  <img
+                  <LazyLoadImage
+                    effect="blur"
                     className="w-12 h-10"
                     src="/assets/Rounded.png"
                     alt="twoway"

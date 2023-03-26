@@ -40,10 +40,11 @@ const Navbar = () => {
               <span className="text-transparent font-normal text-3xl bg-clip-text bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]">
                 LandTick
               </span>
-              <img
+              <LazyLoadImage
                 src="/assets/LandTickIcon.png"
                 alt="Trainicon"
                 className=" w-14"
+                effect="blur"
               />
             </NavLink>
           </div>

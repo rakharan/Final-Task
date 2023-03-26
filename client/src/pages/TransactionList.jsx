@@ -5,6 +5,8 @@ import ModalManual from "../components/Modal/ModalManual";
 import { GlobalContext } from "../context/GlobalContext";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const TransactionList = () => {
   const { functionHandlers } = useContext(GlobalContext);
   const { price } = functionHandlers;
@@ -48,7 +50,8 @@ const TransactionList = () => {
                     </div>
                     <div className="rightHeader">
                       <div className="lefttopicon">
-                        <img
+                        <LazyLoadImage
+                          effect="blur"
                           src="/assets/Landticket.png"
                           alt="my ticket"
                           className="object-cover h-[61px] w-[300px] bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] rounded-bl-[50px] px-14"
@@ -139,7 +142,8 @@ const TransactionList = () => {
                     </div>
                     <div className="rightContent flex flex-col items-center mt-10">
                       <div className="image">
-                        <img
+                        <LazyLoadImage
+                          effect="blur"
                           src="/assets/qr.png"
                           className="w-[200px]"
                           alt="qr"
@@ -230,7 +234,8 @@ const TransactionList = () => {
                         <td className="py-4 px-6">{data.status}</td>
                         <td className="py-4 px-6 flex gap-x-8">
                           <div className="cursor-pointer">
-                            <img
+                            <LazyLoadImage
+                              effect="blur"
                               src="/assets/search.png"
                               alt="detail"
                               className="w-[25px] cursor-pointer"
@@ -241,7 +246,8 @@ const TransactionList = () => {
                             />
                           </div>
                           <div>
-                            <img
+                            <LazyLoadImage
+                              effect="blur"
                               src="/assets/trash.png"
                               alt="detail"
                               className="w-[25px] cursor-pointer"

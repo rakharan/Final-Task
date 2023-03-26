@@ -13,3 +13,23 @@
 body {
     min-height: 100vh;
 }
+
+.loadingScreen {
+    animation-name: moveInDown;
+    animation-duration: 3s;
+}
+
+
+@keyframes moveInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+
+    80% {}
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

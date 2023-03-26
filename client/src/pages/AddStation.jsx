@@ -4,7 +4,8 @@ import { API } from "../config/api";
 import { useMutation, useQuery } from "react-query";
 import Swal from "sweetalert2";
 import ModalManual from "../components/Modal/ModalManual";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const AddStation = () => {
   let { data: stationList, refetch } = useQuery("allStationCache", async () => {
     const response = await API.get("/stations");
@@ -179,7 +180,8 @@ const AddStation = () => {
                     <td className="py-4 px-6">{station.city}</td>
                     <td className="py-4 px-6 flex gap-x-8">
                       <div className="cursor-pointer">
-                        <img
+                        <LazyLoadImage
+                          effect="blur"
                           src="/assets/edit.png"
                           alt="detail"
                           className="w-[25px] cursor-pointer"
@@ -190,7 +192,8 @@ const AddStation = () => {
                         />
                       </div>
                       <div>
-                        <img
+                        <LazyLoadImage
+                          effect="blur"
                           src="/assets/trash.png"
                           alt="detail"
                           className="w-[25px] cursor-pointer"

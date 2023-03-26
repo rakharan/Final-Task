@@ -5,6 +5,8 @@ import { GlobalContext } from "../context/GlobalContext";
 import { useMutation, useQuery } from "react-query";
 import { API } from "../config/api";
 import moment from "moment";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const Payment = () => {
   const { functionHandlers, statesFromGlobalContext } =
     useContext(GlobalContext);
@@ -82,14 +84,16 @@ const Payment = () => {
                     <div className="flex-[70%]">
                       <Card className="mb-5 bg-gray-400 flex text-center">
                         <div className="lefttopicon">
-                          <img
+                          <LazyLoadImage
+                            effect="blur"
                             src="/assets/Landticket.png"
                             alt="my ticket"
                             className="object-cover h-[34px] w-[150px] bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] rounded-br-[50px] px-2"
                           />
                         </div>
                         <div className="flex justify-center">
-                          <img
+                          <LazyLoadImage
+                            effect="blur"
                             className="w-10 h-10"
                             src="/assets/error.png"
                             alt="error"
@@ -174,7 +178,8 @@ const Payment = () => {
                           <div>
                             <h2 className="font-bold text-2xl">Kereta Api</h2>
                           </div>
-                          <img
+                          <LazyLoadImage
+                            effect="blur"
                             src="/assets/qr.png"
                             alt="qr"
                             className="w-[50px]"

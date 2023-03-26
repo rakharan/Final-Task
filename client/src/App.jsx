@@ -15,6 +15,7 @@ import TransactionList from "./pages/TransactionList";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import AddStation from "./pages/AddStation";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 const App = () => {
   const navigate = useNavigate();
   const [state, dispatch] = useContext(UserContext);
@@ -101,27 +102,46 @@ const App = () => {
     checkAuth();
   }, []);
   return (
-    <div className="min-h-screen">
-      <Routes>
-        <Route path="/" element={<SharedLayout />}>
-          <Route index element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signUp" element={<SignUp />} />
-          <Route path="/" element={<PrivateRoute />}>
-            <Route path="/myTicket" element={<MyTicket />} />
-            <Route path="/payment" element={<Payment />} />
-          </Route>
-          <Route path="/" element={<PrivateRouteAdmin />}>
-            <Route path="/admin/addStation" element={<AddStation />} />
-            <Route path="/admin/addTicket" element={<AddTicket />} />
-            <Route
-              path="/admin/transactionList"
-              element={<TransactionList />}
-            />
-          </Route>
-        </Route>
-      </Routes>
-    </div>
+    <>
+      <>
+        {isLoading ? (
+          <>
+            <div className="min-h-screen flex justify-center items-center loadingScreen">
+              <div className="flex flex-col justify-center items-center">
+                <LazyLoadImage
+                  src="/assets/LandTickIcon.png"
+                  alt="loading image"
+                  width="200px"
+                />
+                <h1 className="text-2xl mt-4">LandTick</h1>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <Routes>
+              <Route path="/" element={<SharedLayout />}>
+                <Route index element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signUp" element={<SignUp />} />
+                <Route path="/" element={<PrivateRoute />}>
+                  <Route path="/myTicket" element={<MyTicket />} />
+                  <Route path="/payment" element={<Payment />} />
+                </Route>
+                <Route path="/" element={<PrivateRouteAdmin />}>
+                  <Route path="/admin/addStation" element={<AddStation />} />
+                  <Route path="/admin/addTicket" element={<AddTicket />} />
+                  <Route
+                    path="/admin/transactionList"
+                    element={<TransactionList />}
+                  />
+                </Route>
+              </Route>
+            </Routes>
+          </>
+        )}
+      </>
+    </>
   );
 };
 

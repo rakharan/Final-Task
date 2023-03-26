@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { Card, Table } from "flowbite-react";
 import Button from "../parts/Button";
 import ModalManual from "../components/Modal/ModalManual";
-import { UserContext } from "../context/UserContext";
 import { useQuery } from "react-query";
 import { API } from "../config/api";
 import moment from "moment";
 import { GlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const MyTicket = () => {
   const navigate = useNavigate();
   const { statesFromGlobalContext } = useContext(GlobalContext);
@@ -16,7 +17,6 @@ const MyTicket = () => {
   const handleClose = () => {
     setShowDetail(false);
   };
-
   const [transactionDetail, setTransactionDetail] = useState([]);
 
   let { data: myTicket } = useQuery("myTicketCache", async () => {
@@ -44,7 +44,8 @@ const MyTicket = () => {
                 </div>
                 <div className="rightHeader">
                   <div className="lefttopicon">
-                    <img
+                    <LazyLoadImage
+                      effect="blur"
                       src="/assets/Landticket.png"
                       alt="my ticket"
                       className="object-cover h-[61px] w-[300px] bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] rounded-bl-[50px] px-14"
@@ -129,14 +130,24 @@ const MyTicket = () => {
                 </div>
                 <div className="rightContent flex flex-col items-center mt-10">
                   <div className="image">
-                    <img src="/assets/qr.png" className="w-[200px]" alt="qr" />
+                    <LazyLoadImage
+                      effect="blur"
+                      src="/assets/qr.png"
+                      className="w-[200px]"
+                      alt="qr"
+                    />
                   </div>
                   <span>TCK0101</span>
                 </div>
               </div>
               <div className="flex border-y-2 px-8 py-5">
                 <div className="flex gap-x-4 ">
-                  <img src="/assets/pass.png" alt="" className="w-10" />
+                  <LazyLoadImage
+                    effect="blur"
+                    src="/assets/pass.png"
+                    alt="pass"
+                    className="w-10"
+                  />
                   <div className="flex">
                     <span className="font-[Sen] text-xs">
                       Tunjukkan e-ticket dan identitas para penumpang saat
@@ -145,7 +156,12 @@ const MyTicket = () => {
                   </div>
                 </div>
                 <div className="flex gap-x-4">
-                  <img src="/assets/clock.png" alt="" className="w-10" />
+                  <LazyLoadImage
+                    effect="blur"
+                    src="/assets/clock.png"
+                    alt="clock"
+                    className="w-10"
+                  />
                   <div className="flex">
                     <span className="font-[Sen] text-xs">
                       Check-in paling lambat 90 menit sebelum keberangkatan
@@ -153,7 +169,12 @@ const MyTicket = () => {
                   </div>
                 </div>
                 <div className="flex gap-x-4">
-                  <img src="/assets/warning.png" alt="" className="w-10" />
+                  <LazyLoadImage
+                    effect="blur"
+                    src="/assets/warning.png"
+                    alt="warning"
+                    className="w-10"
+                  />
                   <div className="flex">
                     <span className="font-[Sen] text-xs">
                       Waktu tertera adalah waktu stasiun setempat
@@ -214,7 +235,8 @@ const MyTicket = () => {
                     }}
                   >
                     <div className="lefttopicon">
-                      <img
+                      <LazyLoadImage
+                        effect="blur"
                         src="/assets/Landticket.png"
                         alt="my ticket"
                         className="object-cover h-[34px] w-[150px] bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] rounded-br-[50px] px-2"
@@ -226,8 +248,18 @@ const MyTicket = () => {
                           {item?.ticket.train_name}
                         </h3>
                         <h6 className="text-sm">{item?.ticket.train_type}</h6>
-                        <span className="bg-yellow-100 px-2 py-1 mt-2 text-center rounded-sm w-[70px]">
-                          Pending
+                        <span
+                          className={`px-2 py-1 mt-2 text-center rounded-sm ${
+                            item?.status == `success`
+                              ? `bg-green-200`
+                              : item?.status == `pending`
+                              ? `bg-yellow-100 `
+                              : item?.status == `failed`
+                              ? `bg-red-300`
+                              : ``
+                          }`}
+                        >
+                          {item?.status.toUpperCase()}
                         </span>
                       </div>
                       <div>
@@ -303,16 +335,23 @@ const MyTicket = () => {
                         {moment().format("MMMM Do YYYY")}
                       </h6>
                     </span>
-                    <Button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setTempId(item?.id);
-                        navigate("/payment");
-                      }}
-                      className="w-[80%] mx-auto text-white mt-6 focus:ring-4 focus:outline-none focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-1 text-center bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]"
-                    >
-                      Pay Now
-                    </Button>
+                    {item?.status !== "success" ? (
+                      <>
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setTempId(item?.id);
+                            navigate("/payment");
+                          }}
+                          className={`w-[80%] mx-auto text-white mt-6 focus:ring-4 focus:outline-none focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-1 text-center bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A]`}
+                        >
+                          {/* {item.status === "success" ? `Paid` : `Pay Now`} */}
+                          Pay Now
+                        </Button>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               </Card>

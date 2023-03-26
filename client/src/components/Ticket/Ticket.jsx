@@ -4,7 +4,8 @@ import { useQuery } from "react-query";
 import { API } from "../../config/api";
 import { UserContext } from "../../context/UserContext";
 import Swal from "sweetalert2";
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 const Ticket = ({ filteredTickets, onClickShow }) => {
   const { statesFromGlobalContext, functionHandlers } =
     useContext(GlobalContext);
@@ -119,7 +120,11 @@ const Ticket = ({ filteredTickets, onClickShow }) => {
                   </div>
                 </div>
                 <div>
-                  <img src="/assets/arrow.png" alt="test" />
+                  <LazyLoadImage
+                    effect="blur"
+                    src="/assets/arrow.png"
+                    alt="test"
+                  />
                 </div>
                 <div className="arrival flex flex-col">
                   <span className="font-[Sen] font-black text-lg">
@@ -197,7 +202,11 @@ const Ticket = ({ filteredTickets, onClickShow }) => {
                     </div>
                   </div>
                   <div>
-                    <img src="/assets/arrow.png" alt="test" />
+                    <LazyLoadImage
+                      effect="blur"
+                      src="/assets/arrow.png"
+                      alt="test"
+                    />
                   </div>
                   <div className="arrival flex flex-col">
                     <span className="font-[Sen] font-black text-lg">
