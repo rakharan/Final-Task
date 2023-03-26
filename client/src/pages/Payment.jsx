@@ -49,7 +49,7 @@ const Payment = () => {
     //change this to the script source you want to load, for example this is snap.js sandbox env
     const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
     //change this according to your client-key
-    const myMidtransClientKey = import.meta.env.VITE_MIDTRANS_CLIENT_KEY;
+    const myMidtransClientKey = "SB-Mid-client-QgmV3utYY1T-l0NJ";
 
     let scriptTag = document.createElement("script");
     scriptTag.src = midtransScriptUrl;
@@ -62,7 +62,6 @@ const Payment = () => {
       document.body.removeChild(scriptTag);
     };
   }, []);
-  console.log(currentTicketData);
   return (
     <>
       <>
