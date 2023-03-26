@@ -10,7 +10,7 @@ type Transaction struct {
 	TicketID      int                  `json:"ticket_id" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Ticket        TicketResponse       `json:"ticket"`
 	Total         int                  `json:"total" form:"total"`
-	Qty           int                  `json:"qty" form:"qty"`
+	Qty           int                  `json:"stock" form:"stock"`
 	Status        string               `json:"status" gorm:"type: varchar(255)"`
 	CreatedAt     time.Time            `json:"-"`
 	UpdatedAt     time.Time            `json:"-"`
