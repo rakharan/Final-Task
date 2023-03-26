@@ -66,22 +66,29 @@ const Home = () => {
   const [filteredTicket, setFilteredTicket] = useState([]);
   const handleFilter = (e) => {
     e.preventDefault();
-    const filtered = tickets.filter((ticket) => {
-      return (
+    const filtered = tickets?.filter(
+      (ticket) =>
         (formSearch.start_station_id == "" ||
           ticket.StartStationID == formSearch.start_station_id) &&
         (formSearch.destination_station_id == "" ||
-          ticket.EndStationID == formSearch.destination_station_id) &&
-        (formSearch.start_date == "" ||
-          ticket.start_date == formSearch.start_date) &&
-        formSearch.qty <= ticket.qty
-      );
-    });
+          ticket.EndStationID == formSearch.destination_station_id)
+      // &&
+      // (formSearch.start_date === "" ||
+      //   ticket.start_date === formSearch.start_date) &&
+      // formSearch.qty <= ticket.qty
+    );
     setFilteredTicket(filtered);
+    console.log("this is filtered data", filtered);
   };
 
   const resetFilter = () => {
     setFilteredTicket([]);
+    setFormSearch({
+      start_station_id: "",
+      destination_station_id: "",
+      start_date: "",
+      qty: "",
+    });
   };
 
   const showTicketModalHandler = () => {
@@ -185,6 +192,7 @@ const Home = () => {
                       id="start_station_id"
                       onChange={handleChange}
                       className="block w-full text-sm focus:ring-red-300 focus:border-red-500 text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                      value={formSearch.start_station_id}
                     >
                       {stations?.map((item) => (
                         <option key={item.id} value={item?.id}>
@@ -243,6 +251,7 @@ const Home = () => {
                       id="destination"
                       onChange={handleChange}
                       className="block w-full text-sm focus:ring-red-300 focus:border-red-500 text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                      value={formSearch.destination_station_id}
                     >
                       {stations?.map((item) => (
                         <option key={item.id} value={item?.id}>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { GlobalContext } from "../../context/GlobalContext";
 import Button from "../../parts/Button";
@@ -51,39 +51,47 @@ const Login = () => {
     }
   };
 
-  const handleLogin = useMutation(async (event) => {
-    event.preventDefault();
-    const response = await API.post("/login", loginData);
+  let [errorMessage, setErrorMessage] = useState("");
 
-    setCurrentUser(response.data.data);
-    dispatch({
-      type: "LOGIN_SUCCESS",
-      payload: response.data.data,
-    });
-    setAuthToken(response.data.data.token);
-    Swal.fire({
-      title: "Login Success",
-      icon: "success",
-      timer: 1500,
-      width: 600,
-      padding: "3em",
-      color: "#c23a63",
-      background: "#fff)",
-      backdrop: `
-        rgba(0,0,123,0.4)
-        left top
-        no-repeat
-      `,
-    });
-    hideModal();
-    setLoginData({
-      name: "",
-      email: "",
-      password: "",
-    });
-    setPreview(null);
-    hideModal();
+  const handleLogin = useMutation(async (event) => {
+    try {
+      event.preventDefault();
+      const response = await API.post("/login", loginData);
+
+      setCurrentUser(response.data.data);
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: response.data.data,
+      });
+      setAuthToken(response.data.data.token);
+      Swal.fire({
+        title: "Login Success",
+        icon: "success",
+        timer: 1500,
+        width: 600,
+        padding: "3em",
+        color: "#c23a63",
+        background: "#fff)",
+        backdrop: `
+          rgba(0,0,123,0.4)
+          left top
+          no-repeat
+        `,
+      });
+      hideModal();
+      setLoginData({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
+    }
   });
+
+  useEffect(() => {
+    console.log("this is error login message", errorMessage);
+  }, [errorMessage]);
 
   const config = {
     headers: {
@@ -132,7 +140,7 @@ const Login = () => {
       setPreview(null);
       return;
     } catch (error) {
-      console.log("register failed : ", error);
+      console.log(error);
     }
   });
   return (
@@ -158,6 +166,7 @@ const Login = () => {
                     onChange={handleInputRegister}
                     value={input.name}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="text"
@@ -166,6 +175,7 @@ const Login = () => {
                     onChange={handleInputRegister}
                     value={input.username}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="email"
@@ -174,6 +184,7 @@ const Login = () => {
                     onChange={handleInputRegister}
                     value={input.email}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="text"
@@ -182,6 +193,7 @@ const Login = () => {
                     onChange={handleInputRegister}
                     value={input.phone}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="password"
@@ -190,12 +202,14 @@ const Login = () => {
                     onChange={handleInputRegister}
                     value={input.password}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="file"
                     id="upload"
                     name="image"
                     onChange={handleInputRegister}
+                    required
                   />
                   <Button className="mt-5 bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] text-white w-full rounded-[50px]">
                     Register
@@ -226,6 +240,13 @@ const Login = () => {
                 </h1>
               </div>
               <div className="form flex flex-col">
+                {errorMessage !== "" && (
+                  <>
+                    <span className="bg-red-200 text-center mb-2">
+                      {errorMessage}
+                    </span>
+                  </>
+                )}
                 <form
                   className="flex flex-col gap-y-2"
                   onSubmit={(e) => handleLogin.mutate(e)}
@@ -246,7 +267,12 @@ const Login = () => {
                     value={loginData.password}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
                   />
-                  <Button className="mt-5 bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] text-white w-full rounded-[50px]">
+                  <Button
+                    className="mt-5 bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] text-white w-full rounded-[50px]"
+                    onClick={() => {
+                      setErrorMessage("");
+                    }}
+                  >
                     Login
                   </Button>
                 </form>

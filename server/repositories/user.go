@@ -12,7 +12,7 @@ type UserRepository interface {
 	Register(user models.User) (models.User, error)
 	Login(email string) (models.User, error)
 	// UpdateUser(user models.User) (models.User, error)
-	// DeleteUser(user models.User, ID int) (models.User, error)
+	DeleteUser(user models.User) (models.User, error)
 }
 type repository struct {
 	db *gorm.DB
@@ -45,5 +45,10 @@ func (r *repository) Login(email string) (models.User, error) {
 	var user models.User
 	err := r.db.First(&user, "email=?", email).Error
 
+	return user, err
+}
+
+func (r *repository) DeleteUser(user models.User) (models.User, error) {
+	err := r.db.Delete(&user).Error
 	return user, err
 }

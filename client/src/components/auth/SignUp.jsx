@@ -8,13 +8,12 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const SignUp = () => {
+  let [errorMessage, setErrorMessage] = useState("");
   const [isOnLogin, setIsOnLogin] = useState(false);
   const { functionHandlers, statesFromGlobalContext } =
     useContext(GlobalContext);
   const {
     loginData,
-    setIsLoggedIn,
-    setIsAdmin,
     setIsModalVisible,
     setLoginData,
     preview,
@@ -49,33 +48,16 @@ const SignUp = () => {
     }
   };
   const handleLogin = useMutation(async (event) => {
-    event.preventDefault();
-    const response = await API.post("/login", loginData);
-    dispatch({
-      type: "LOGIN_SUCCESS",
-      payload: response.data.data,
-    });
-    setAuthToken(localStorage.token);
+    try {
+      event.preventDefault();
+      const response = await API.post("/login", loginData);
 
-    if (response.data.data.role === "admin") {
-      Swal.fire({
-        title: "Login Success",
-        icon: "success",
-        timer: 1500,
-        width: 600,
-        padding: "3em",
-        color: "#c23a63",
-        background: "#fff",
-        backdrop: `
-          rgba(0,0,123,0.4)
-          left top
-          no-repeat
-          `,
+      setCurrentUser(response.data.data);
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: response.data.data,
       });
-      navigate("/admin");
-    } else {
-      hideModal();
-
+      setAuthToken(response.data.data.token);
       Swal.fire({
         title: "Login Success",
         icon: "success",
@@ -85,19 +67,20 @@ const SignUp = () => {
         color: "#c23a63",
         background: "#fff)",
         backdrop: `
-            rgba(0,0,123,0.4)
-            left top
-            no-repeat
-          `,
+          rgba(0,0,123,0.4)
+          left top
+          no-repeat
+        `,
       });
-      navigate("/");
+      hideModal();
+      setLoginData({
+        name: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
     }
-    hideModal();
-    setLoginData({
-      name: "",
-      email: "",
-      password: "",
-    });
   });
   const handleRegister = useMutation(async (e) => {
     try {
@@ -162,6 +145,13 @@ const SignUp = () => {
                 </h1>
               </div>
               <div className="form flex flex-col">
+                {errorMessage !== "" && (
+                  <>
+                    <span className="bg-red-200 text-center mb-2">
+                      {errorMessage}
+                    </span>
+                  </>
+                )}
                 <form
                   className="flex flex-col gap-y-2"
                   onSubmit={(e) => handleLogin.mutate(e)}
@@ -173,6 +163,7 @@ const SignUp = () => {
                     onChange={handleInput}
                     value={loginData.email}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="password"
@@ -181,6 +172,7 @@ const SignUp = () => {
                     onChange={handleInput}
                     value={loginData.password}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <Button className="mt-5 bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] text-white w-full rounded-[50px]">
                     Login
@@ -222,6 +214,7 @@ const SignUp = () => {
                     onChange={handleInputRegister}
                     value={input.name}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="text"
@@ -230,6 +223,7 @@ const SignUp = () => {
                     onChange={handleInputRegister}
                     value={input.username}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="email"
@@ -238,6 +232,7 @@ const SignUp = () => {
                     onChange={handleInputRegister}
                     value={input.email}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="text"
@@ -246,6 +241,7 @@ const SignUp = () => {
                     onChange={handleInputRegister}
                     value={input.phone}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="password"
@@ -254,12 +250,14 @@ const SignUp = () => {
                     onChange={handleInputRegister}
                     value={input.password}
                     className="w-[350px] h-[50px] border-2 border-[#B1B1B1] p-4"
+                    required
                   />
                   <input
                     type="file"
                     id="upload"
                     name="image"
                     onChange={handleInputRegister}
+                    required
                   />
                   <Button className="mt-5 bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] text-white w-full rounded-[50px]">
                     Register
