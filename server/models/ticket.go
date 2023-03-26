@@ -13,12 +13,13 @@ type Ticket struct {
 	StartDate      time.Time `json:"start_date"`
 	StartTime      string    `json:"start_time"`
 	ArrivalTime    string    `json:"arrival_time"`
-	Price          int       `json:"price" gorm:"type: int" form:"price"`
-	Stock          int       `json:"qty" gorm:"type: int" form:"qty"`
+	Price          int       `json:"price" gorm:"type:int" form:"price"`
+	Stock          int       `json:"stock" gorm:"type:int" form:"stock"`
 	UserID         int       `json:"user_id"`
 	CreatedAt      time.Time `json:"-"`
 	UpdatedAt      time.Time `json:"-"`
 }
+
 type TicketResponse struct {
 	ID             int             `json:"id"`
 	TrainName      string          `json:"train_name"`
