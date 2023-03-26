@@ -3,7 +3,9 @@ import Button from "../parts/Button";
 import { API } from "../config/api";
 import { useMutation, useQuery } from "react-query";
 import Swal from "sweetalert2";
+
 const AddTicket = () => {
+  document.title = "LandTick | Admin Add Ticket";
   const [form, setForm] = useState({
     train_name: "",
     train_type: "",
@@ -20,6 +22,7 @@ const AddTicket = () => {
     const response = await API.get("/stations");
     return response.data.data.stations;
   });
+
   const handleChange = (e) => {
     setForm({
       ...form,
