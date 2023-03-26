@@ -7,6 +7,8 @@ import ModalManual from "../components/Modal/ModalManual";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 const AddStation = () => {
+  document.title = "LandTick | Admin Add Station";
+
   let { data: stationList, refetch } = useQuery("allStationCache", async () => {
     const response = await API.get("/stations");
     return response.data.data;

@@ -11,7 +11,10 @@ import { useNavigate } from "react-router-dom";
 import Ticket from "../components/Ticket/Ticket";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+
 const Home = () => {
+  document.title = "LandTick | Home";
+
   const navigate = useNavigate();
   const { statesFromGlobalContext } = useContext(GlobalContext);
   const {

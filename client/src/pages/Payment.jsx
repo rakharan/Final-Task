@@ -7,7 +7,12 @@ import { API } from "../config/api";
 import moment from "moment";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useNavigate } from "react-router-dom";
+
 const Payment = () => {
+  document.title = "LandTick | Payment";
+
+  const navigate = useNavigate();
   const { functionHandlers, statesFromGlobalContext } =
     useContext(GlobalContext);
   const { tempId } = statesFromGlobalContext;
@@ -42,6 +47,7 @@ const Payment = () => {
           alert("you closed the popup without finishing the payment");
         },
       });
+      navigate("/myTicket");
     } catch (error) {
       console.log(error);
     }

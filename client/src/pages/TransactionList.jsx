@@ -7,7 +7,10 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+
 const TransactionList = () => {
+  document.title = "LandTick | Admin Transaction List";
+
   const { functionHandlers } = useContext(GlobalContext);
   const { price } = functionHandlers;
 

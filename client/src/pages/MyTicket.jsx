@@ -9,7 +9,10 @@ import { GlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+
 const MyTicket = () => {
+  document.title = "LandTick | My Ticket";
+
   const navigate = useNavigate();
   const { statesFromGlobalContext } = useContext(GlobalContext);
   const { setTempId } = statesFromGlobalContext;
