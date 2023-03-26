@@ -70,12 +70,12 @@ func (r *repository) UpdateTransaction(status string, ID string) (models.Transac
 	var transaction models.Transaction
 	r.db.Preload("Ticket").First(&transaction, ID)
 
-	if status != transaction.Status && status == "success" {
-		var ticket models.Ticket
-		r.db.First(&ticket, transaction.Ticket.ID)
-		ticket.Stock = ticket.Stock - 1
-		r.db.Save(&ticket)
-	}
+	// if status != transaction.Status && status == "success" {
+	// 	var ticket models.Ticket
+	// 	r.db.First(&ticket, transaction.Ticket.ID)
+	// 	ticket.Stock = ticket.Stock - 1
+	// 	r.db.Save(&ticket)
+	// }
 
 	transaction.Status = status
 	error := r.db.Save(&transaction).Error

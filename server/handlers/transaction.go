@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	dto "landtick/dto/result"
 	transactiondto "landtick/dto/transaction"
 	"landtick/models"
@@ -156,7 +157,7 @@ func (h *handlerTransaction) Notification(c echo.Context) error {
 	transactionStatus := notificationPayload["transaction_status"].(string)
 	fraudStatus := notificationPayload["fraud_status"].(string)
 	orderId := notificationPayload["order_id"].(string)
-
+	fmt.Print("ini payloadnya", notificationPayload)
 	if transactionStatus == "capture" {
 		if fraudStatus == "challenge" {
 			// TODO set transaction status on your database to 'challenge'
