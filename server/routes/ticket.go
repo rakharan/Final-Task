@@ -18,5 +18,5 @@ func TicketRoutes(e *echo.Group) {
 	e.POST("/ticket", middleware.Auth(h.CreateTicket))
 	e.GET("/ticket/:id", h.GetTicket)
 	e.POST("/ticket-transaction/:id", middleware.Auth(h.CreateTransactionQty))
-	e.DELETE("/ticket/:id", h.DeleteTicket)
+	e.DELETE("/ticket/:id", middleware.Auth(h.DeleteTicket))
 }
