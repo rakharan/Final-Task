@@ -68,7 +68,6 @@ const AddStation = () => {
       station_name: stationDetail[0]?.name,
       station_city: stationDetail[0]?.city,
     });
-    console.log(form);
   }, [stationDetail]);
   const handleSubmitUpdate = useMutation(async (e) => {
     e.preventDefault();

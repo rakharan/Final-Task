@@ -104,7 +104,6 @@ const Ticket = ({ filteredTickets, onClickShow }) => {
           >
             <div className="flex justify-center cursor-pointer">
               <div className="w-[90%] h-[100px] bg-white shadow-navbarShadow hover:shadow-xl transition-all duration-300 rounded-lg overflow-hidden flex justify-around items-center">
-                <h1>Ini filtered</h1>
                 <div className="trainName flex flex-col">
                   <span className="font-[Sen] font-black text-lg">
                     {ticket?.train_name}

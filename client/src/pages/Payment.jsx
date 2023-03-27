@@ -30,8 +30,6 @@ const Payment = () => {
     try {
       const response = await API.get(`/payments/` + id);
       const token = response.data.data.token;
-      console.log(response);
-      console.log(token);
       window.snap.pay(token, {
         onSuccess: function (result) {
           console.log(result);
@@ -65,7 +63,6 @@ const Payment = () => {
     // for example snap.js have data-client-key attribute
     scriptTag.setAttribute("data-client-key", myMidtransClientKey);
 
-    console.log(myMidtransClientKey);
     document.body.appendChild(scriptTag);
     return () => {
       document.body.removeChild(scriptTag);

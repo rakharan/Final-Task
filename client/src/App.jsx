@@ -107,13 +107,14 @@ const App = () => {
         {isLoading ? (
           <>
             <div className="min-h-screen flex justify-center items-center loadingScreen">
-              <div className="flex flex-col justify-center items-center">
-                <LazyLoadImage
-                  src="/assets/LandTickIcon.png"
-                  alt="loading image"
-                  width="200px"
-                />
-                <h1 className="text-2xl mt-4">LandTick</h1>
+              <div className="flex flex-col justify-center items-center bg-gradient-to-r from-[#EC7AB7] to-[#EC7A7A] p-12 rounded-3xl ">
+                <div className="backdrop-blur-lg">
+                  <LazyLoadImage
+                    src="/assets/loadingScreen.png"
+                    alt="loading image"
+                    width="200px"
+                  />
+                </div>
               </div>
             </div>
           </>
